@@ -40,10 +40,10 @@ public class WeixinServlet extends HttpServlet {
 			Map<String, String>map=MessageUtil.xmlToMap(req);
 			String fromUserName=map.get("FromUserName");
 			String toUserName=map.get("ToUserName");
-			//String createTime=map.get("CreateTime");
+//			String createTime=map.get("CreateTime");
 			String msgType=map.get("MsgType");
 			String content=map.get("Content");
-			//String MsgId=map.get("MsgId");
+//			String MsgId=map.get("MsgId");
 			
 			String message=null;
 			if(MessageUtil.MESSAGE_TEXT.equals(msgType)){
@@ -51,7 +51,8 @@ public class WeixinServlet extends HttpServlet {
 				if("1".equals(content)){
 					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.firstMenu());
 				}else if("2".equals(content)){
-					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.secondMenu());
+//					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.secondMenu());
+					message=MessageUtil.initNewsMessage(toUserName, fromUserName);
 				}else if("?".equals(content)||"£¿".equals(content)){
 					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
 				}
