@@ -2,26 +2,37 @@ package com.util;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
-
+/**
+ * 接入校验方式
+ * @author Sumkor
+ *
+ */
 public class CheckUtil {
 	private static final String token = "sumkor";
-
-	public static boolean checkSignature(String signature, String timestamp,
-			String nonce) {
+	/**
+	 * 验证服务器地址的有效性
+	 * @param signature 微信加密签名
+	 * @param timestamp 时间戳
+	 * @param nonce 随机数
+	 * @return
+	 */
+	public static boolean checkSignature(String signature, String timestamp, String nonce) {
 		String arr[] = new String[] { token, timestamp, nonce };
-		// 排序
 		Arrays.sort(arr);
-		// 创建字符串
+		//将三个参数字符串拼接成一个字符串进行sha1加密
 		StringBuffer content = new StringBuffer();
 		for (int i = 0; i < arr.length; i++) {
 			content.append(arr[i]);
 		}
-		// sha1
 		String temp=getSha1(content.toString());
+		//开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
 		return temp.equals(signature);
 	}
-
-	
+	/**
+	 * SHA1加密方法
+	 * @param str
+	 * @return
+	 */
 	public static String getSha1(String str) {
 		if (str == null || str.length() == 0) {
 			return null;
@@ -44,6 +55,5 @@ public class CheckUtil {
 		} catch (Exception e) {
 			return null;
 		}
-
 	}
 }
