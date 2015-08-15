@@ -219,5 +219,4 @@ public class MessageUtil {
 		sb.append("这是一条文字消息。");
 		return sb.toString();
 	}
-	
 }

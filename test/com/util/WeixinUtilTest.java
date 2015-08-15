@@ -7,9 +7,12 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import net.sf.json.JSONObject;
+
 import org.apache.http.ParseException;
 import org.junit.Test;
 
+import com.menu.Menu;
 import com.po.AccessToken;
 
 public class WeixinUtilTest {
@@ -28,7 +31,7 @@ public class WeixinUtilTest {
 	}
 	
 	@Test
-	public void testupload(){	
+	public void testUpload(){	
 		String path="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/music/3nd-untroubled terror.jpg";
 		String path_perm="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/image/github.jpg";
 		try {
@@ -39,6 +42,24 @@ public class WeixinUtilTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testCreateMenu(){
+		try {
+			AccessToken token = WeixinUtil.getAccessToken();
+			Menu menu=WeixinUtil.initMenu();
+			String menuStr=JSONObject.fromObject(menu).toString();
+			int result=WeixinUtil.createMenu(token.getToken(), menuStr);
+			if(result==0){
+				System.out.println("创建菜单成功");
+			}else{
+				System.out.println("错误码"+result);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

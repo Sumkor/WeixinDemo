@@ -28,13 +28,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import com.menu.Button;
+import com.menu.ClickButton;
+import com.menu.Menu;
+import com.menu.ViewButton;
 import com.po.AccessToken;
 
-//import com.menu.Button;
-//import com.menu.ClickButton;
-//import com.menu.Menu;
-//import com.menu.ViewButton;
-//import com.po.AccessToken;
 //import com.Data;
 //import com.Parts;
 //import com.trans.Symbols;
@@ -46,17 +45,16 @@ import com.po.AccessToken;
  *
  */
 public class WeixinUtil {
-//	private static final String APPID="wx7b91a801329d3906";	
-//	private static final String APPSECRET="2c33c5dd698410ba797342352e94b42f";
 	private static final String APPID="wx02611a7655e39458";
 	private static final String APPSECRET="6aa9fa520e5ad1414b4bacb63af95a2c";
 	//接口调用请求
 	private static final String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";	
 	private static final String UPLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
 	private static final String UPLOAD_URL_PREM = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN";
+	private static final String CREATE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 	
 	/**
-	 * 封装GET请求方法，将接受的数据转成json格式
+	 * 封装GET请求方法，将接收的数据转成json格式
 	 * @param url
 	 * @return
 	 * @throws ParseException
@@ -310,5 +308,57 @@ public class WeixinUtil {
 		String typeName = "url";
 		String mediaId = jsonObj.getString(typeName);
 		return mediaId;
+	}
+	
+	
+	/**
+	 * 组装菜单
+	 * @return
+	 */
+	public static Menu initMenu(){
+		Menu menu = new Menu();
+		ClickButton button11 = new ClickButton();
+		button11.setName("click菜单");
+		button11.setType("click");
+		button11.setKey("11");
+		
+		ViewButton button21 = new ViewButton();
+		button21.setName("view菜单");
+		button21.setType("view");
+		button21.setUrl("https://github.com/");
+		
+		ClickButton button31 = new ClickButton();
+		button31.setName("扫码事件");
+		button31.setType("scancode_push");
+		button31.setKey("31");
+		
+		ClickButton button32 = new ClickButton();
+		button32.setName("地理位置");
+		button32.setType("location_select");
+		button32.setKey("32");
+		
+		Button button = new Button();
+		button.setName("菜单");
+		button.setSub_button(new Button[]{button31,button32});
+		
+		menu.setButton(new Button[]{button11,button21,button});
+		return menu;
+	}
+	/**
+	 * 自定义菜单创建接口
+	 * @param accessToken
+	 * @param menu
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	public static int createMenu(String accessToken,String menu) throws ParseException, IOException{
+		int result = 0;
+		String url = CREATE_MENU_URL.replace("ACCESS_TOKEN", accessToken);
+		JSONObject jsonObject = doPostStr(url, menu);
+		if(jsonObject != null){
+			result = jsonObject.getInt("errcode");
+		}
+		return result;
 	}
 }
