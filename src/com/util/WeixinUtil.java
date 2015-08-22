@@ -47,11 +47,15 @@ import com.po.AccessToken;
 public class WeixinUtil {
 	private static final String APPID="wx02611a7655e39458";
 	private static final String APPSECRET="6aa9fa520e5ad1414b4bacb63af95a2c";
+	
 	//接口调用请求
 	private static final String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";	
-	private static final String UPLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
+	private static final String UPLOAD_URL_TEMP = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
 	private static final String UPLOAD_URL_PREM = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN";
+	
 	private static final String CREATE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+	private static final String QUERY_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN";	
+	private static final String DELETE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 	
 	/**
 	 * 封装GET请求方法，将接收的数据转成json格式
@@ -61,13 +65,13 @@ public class WeixinUtil {
 	 * @throws IOException
 	 */
 	public static JSONObject doGetStr(String url) throws ParseException, IOException{
-		DefaultHttpClient client = new DefaultHttpClient();
+		DefaultHttpClient client = new DefaultHttpClient();//DefaultHttpClient是实现HttpClient接口的子类
 		HttpGet httpGet = new HttpGet(url);
 		JSONObject jsonObject = null;
 		
-		HttpResponse httpResponse = client.execute(httpGet);
-		
+		HttpResponse httpResponse = client.execute(httpGet);	
 		HttpEntity entity = httpResponse.getEntity();
+		
 		if(entity != null){
 			String result = EntityUtils.toString(entity,"UTF-8");
 			jsonObject = JSONObject.fromObject(result);
@@ -89,9 +93,10 @@ public class WeixinUtil {
 		JSONObject jsonObject = null;
 		
 		httpost.setEntity(new StringEntity(outStr,"UTF-8"));//将传递进来的参数提交
-		HttpResponse response = client.execute(httpost);
+		HttpResponse httpResponse = client.execute(httpost);
+		HttpEntity entity = httpResponse.getEntity();
 		
-		String result = EntityUtils.toString(response.getEntity(),"UTF-8");
+		String result = EntityUtils.toString(entity,"UTF-8");
 		jsonObject = JSONObject.fromObject(result);
 		return jsonObject;
 	}
@@ -125,83 +130,14 @@ public class WeixinUtil {
 	 * @throws NoSuchProviderException
 	 * @throws KeyManagementException
 	 */
-	public static String upload(String filePath, String accessToken,String type) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
+	public static String upload_temp(String filePath, String accessToken,String type) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
 		File file = new File(filePath);
 		if (!file.exists() || !file.isFile()) {
 			throw new IOException("文件不存在");
 		}
-
-		String url = UPLOAD_URL.replace("ACCESS_TOKEN", accessToken).replace("TYPE",type);
+		String url = UPLOAD_URL_TEMP.replace("ACCESS_TOKEN", accessToken).replace("TYPE",type);		
 		
-		URL urlObj = new URL(url);
-		//连接
-		HttpURLConnection con = (HttpURLConnection) urlObj.openConnection();
-
-		con.setRequestMethod("POST"); 
-		con.setDoInput(true);
-		con.setDoOutput(true);
-		con.setUseCaches(false); 
-
-		//设置请求头信息
-		con.setRequestProperty("Connection", "Keep-Alive");
-		con.setRequestProperty("Charset", "UTF-8");
-
-		//设置边界
-		String BOUNDARY = "----------" + System.currentTimeMillis();
-		con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("--");
-		sb.append(BOUNDARY);
-		sb.append("\r\n");
-		sb.append("Content-Disposition: form-data;name=\"file\";filename=\"" + file.getName() + "\"\r\n");
-		sb.append("Content-Type:application/octet-stream\r\n\r\n");
-
-		byte[] head = sb.toString().getBytes("utf-8");
-
-		//获得输出流
-		OutputStream out = new DataOutputStream(con.getOutputStream());
-		//输出表头
-		out.write(head);
-
-		//文件正文部分
-		//把文件已流文件的方式 推入到url中
-		DataInputStream in = new DataInputStream(new FileInputStream(file));
-		int bytes = 0;
-		byte[] bufferOut = new byte[1024];
-		while ((bytes = in.read(bufferOut)) != -1) {
-			out.write(bufferOut, 0, bytes);
-		}
-		in.close();
-
-		//结尾部分
-		byte[] foot = ("\r\n--" + BOUNDARY + "--\r\n").getBytes("utf-8");//定义最后数据分隔线
-
-		out.write(foot);
-
-		out.flush();
-		out.close();
-
-		StringBuffer buffer = new StringBuffer();
-		BufferedReader reader = null;
-		String result = null;
-		try {
-			//定义BufferedReader输入流来读取URL的响应
-			reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line);
-			}
-			if (result == null) {
-				result = buffer.toString();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-		}
+		String result = HttprequestUtil.httpRequest(file, url);
 
 		JSONObject jsonObj = JSONObject.fromObject(result);
 		System.out.println(jsonObj);
@@ -215,7 +151,7 @@ public class WeixinUtil {
 	
 	
 	/**
-	 * 上传永久图片
+	 * 上传永久素材
 	 * @param filePath
 	 * @param accessToken
 	 * @param type
@@ -230,78 +166,9 @@ public class WeixinUtil {
 		if (!file.exists() || !file.isFile()) {
 			throw new IOException("文件不存在");
 		}
-
 		String url = UPLOAD_URL_PREM.replace("ACCESS_TOKEN", accessToken);
 		
-		URL urlObj = new URL(url);
-		//连接
-		HttpURLConnection con = (HttpURLConnection) urlObj.openConnection();
-
-		con.setRequestMethod("POST"); 
-		con.setDoInput(true);
-		con.setDoOutput(true);
-		con.setUseCaches(false); 
-
-		//设置请求头信息
-		con.setRequestProperty("Connection", "Keep-Alive");
-		con.setRequestProperty("Charset", "UTF-8");
-
-		//设置边界
-		String BOUNDARY = "----------" + System.currentTimeMillis();
-		con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("--");
-		sb.append(BOUNDARY);
-		sb.append("\r\n");
-		sb.append("Content-Disposition: form-data;name=\"file\";filename=\"" + file.getName() + "\"\r\n");
-		sb.append("Content-Type:application/octet-stream\r\n\r\n");
-
-		byte[] head = sb.toString().getBytes("utf-8");
-
-		//获得输出流
-		OutputStream out = new DataOutputStream(con.getOutputStream());
-		//输出表头
-		out.write(head);
-
-		//文件正文部分
-		//把文件已流文件的方式 推入到url中
-		DataInputStream in = new DataInputStream(new FileInputStream(file));
-		int bytes = 0;
-		byte[] bufferOut = new byte[1024];
-		while ((bytes = in.read(bufferOut)) != -1) {
-			out.write(bufferOut, 0, bytes);
-		}
-		in.close();
-
-		//结尾部分
-		byte[] foot = ("\r\n--" + BOUNDARY + "--\r\n").getBytes("utf-8");//定义最后数据分隔线
-
-		out.write(foot);
-
-		out.flush();
-		out.close();
-
-		StringBuffer buffer = new StringBuffer();
-		BufferedReader reader = null;
-		String result = null;
-		try {
-			//定义BufferedReader输入流来读取URL的响应
-			reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line);
-			}
-			if (result == null) {
-				result = buffer.toString();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-		}
+		String result = HttprequestUtil.httpRequest(file, url);
 
 		JSONObject jsonObj = JSONObject.fromObject(result);
 		System.out.println(jsonObj);
@@ -345,7 +212,7 @@ public class WeixinUtil {
 		return menu;
 	}
 	/**
-	 * 自定义菜单创建接口
+	 * 自定义菜单-创建接口
 	 * @param accessToken
 	 * @param menu
 	 * @return
@@ -356,6 +223,22 @@ public class WeixinUtil {
 		int result = 0;
 		String url = CREATE_MENU_URL.replace("ACCESS_TOKEN", accessToken);
 		JSONObject jsonObject = doPostStr(url, menu);
+		if(jsonObject != null){
+			result = jsonObject.getInt("errcode");
+		}
+		return result;
+	}
+	
+	public static JSONObject queryMenu(String token) throws ParseException, IOException{
+		String url = QUERY_MENU_URL.replace("ACCESS_TOKEN", token);
+		JSONObject jsonObject = doGetStr(url);
+		return jsonObject;
+	}
+	
+	public static int deleteMenu(String token) throws ParseException, IOException{
+		String url = DELETE_MENU_URL.replace("ACCESS_TOKEN", token);
+		JSONObject jsonObject = doGetStr(url);
+		int result = 0;
 		if(jsonObject != null){
 			result = jsonObject.getInt("errcode");
 		}

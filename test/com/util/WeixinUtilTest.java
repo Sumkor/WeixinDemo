@@ -36,9 +36,10 @@ public class WeixinUtilTest {
 		String path_perm="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/image/github.jpg";
 		try {
 			AccessToken token = WeixinUtil.getAccessToken();
-			String imageId=WeixinUtil.upload(path, token.getToken(), "thumb");
+			String imageId=WeixinUtil.upload_temp(path, token.getToken(), "thumb");
 			String URL=WeixinUtil.upload_perm(path_perm, token.getToken());
-			System.out.println(imageId);
+			System.out.println("¡Ÿ ±Õº∆¨id "+imageId);
+			System.out.println("”¿æ√Õº∆¨url "+URL);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -59,7 +60,17 @@ public class WeixinUtilTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	@Test
+	public void testQueryMenu(){
+		try {
+			AccessToken token = WeixinUtil.getAccessToken();
+			JSONObject jsonObject = WeixinUtil.queryMenu(token.getToken());
+			System.out.println(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
