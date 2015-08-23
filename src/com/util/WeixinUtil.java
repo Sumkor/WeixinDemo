@@ -244,4 +244,23 @@ public class WeixinUtil {
 		}
 		return result;
 	}
+	
+	/**
+	 * 百度翻译API
+	 * @param source
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	public static String translateFull(String source) throws ParseException, IOException{
+		String url = "http://openapi.baidu.com/public/2.0/bmt/translate?client_id=e5qeHZf77p4bGogKI6IZOdRl&q=KEYWORD&from=auto&to=auto";
+		url = url.replace("KEYWORD", URLEncoder.encode(source, "UTF-8"));
+		JSONObject jsonObject = doGetStr(url);
+		StringBuffer sb = new StringBuffer();
+		List<Map> list = (List<Map>) jsonObject.get("trans_result");
+		for(Map map : list){
+			sb.append(map.get("dst"));//dst为trans_result数组中的译文
+		}
+		return sb.toString();
+	}
 }

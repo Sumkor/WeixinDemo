@@ -15,6 +15,7 @@ import org.dom4j.DocumentException;
 import com.po.TextMessage;
 import com.util.CheckUtil;
 import com.util.MessageUtil;
+import com.util.WeixinUtil;
 
 public class WeixinServlet extends HttpServlet {
 	/**
@@ -54,24 +55,35 @@ public class WeixinServlet extends HttpServlet {
 //			String createTime=map.get("CreateTime");
 //			String MsgId=map.get("MsgId");	
 			String message=null;
-			if(MessageUtil.MESSAGE_TEXT.equals(msgType)){			
+			if(MessageUtil.MESSAGE_TEXT.equals(msgType)){	
+				//被动回复消息
 				if("1".equals(content)){
-					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.firstMenu());
+					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.textMenu());
 				}else if("2".equals(content)){
 					message=MessageUtil.initNewsMessage(toUserName, fromUserName);
 				}else if("3".equals(content)){
 					message=MessageUtil.initImageMessage(toUserName, fromUserName);
 				}else if("4".equals(content)){
 					message=MessageUtil.initMusicMessage(toUserName, fromUserName);
+				}else if("5".equals(content)){
+					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.transMenu());
 				}else if("?".equals(content)||"？".equals(content)){
-					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.mainMenu());
+				}else if(content.startsWith("翻译")){
+					String word = content.replaceAll("^翻译", "").trim();
+					if("".equals(word)){
+						message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.transMenu());
+					}else{
+						message = MessageUtil.initText(toUserName, fromUserName, WeixinUtil.translateFull(word));
+					}
 				}		
 			}else if(MessageUtil.MESSAGE_EVENT.equals(msgType)){
+				//自定义菜单-事件推送
 				String eventType=map.get("Event");
 				if(MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)){
-					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.mainMenu());
 				}else if(MessageUtil.MESSAGE_CLICK.equals(eventType)){
-					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.mainMenu());
 				}else if(MessageUtil.MESSAGE_VIEW.equals(eventType)){
 					String url = map.get("EventKey");
 					message = MessageUtil.initText(toUserName, fromUserName, url);

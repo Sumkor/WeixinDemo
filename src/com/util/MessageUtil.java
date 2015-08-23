@@ -153,7 +153,7 @@ public class MessageUtil {
 	public static String initImageMessage(String toUserName,String fromUserName){
 		String message = null;
 		Image image = new Image();
-		image.setMediaId("Q7aGw5fsZb-E7FdRsdZ_d5miQO6OIqAQKjfeUe-TM70P2xj4nXSvYwUYXqveZHte");
+		image.setMediaId("lgIxipCznfamNN8iuDp60knuAl3mS2o1D_4e5Geg_AOILzKAH8tPTWJ5SIUZ-f3v");
 		ImageMessage imageMessage = new ImageMessage();
 		imageMessage.setFromUserName(toUserName);
 		imageMessage.setToUserName(fromUserName);
@@ -183,7 +183,7 @@ public class MessageUtil {
 	public static String initMusicMessage(String toUserName,String fromUserName){
 		String message = null;
 		Music music = new Music();
-		music.setThumbMediaId("Q7aGw5fsZb-E7FdRsdZ_d5miQO6OIqAQKjfeUe-TM70P2xj4nXSvYwUYXqveZHte");
+		music.setThumbMediaId("lgIxipCznfamNN8iuDp60knuAl3mS2o1D_4e5Geg_AOILzKAH8tPTWJ5SIUZ-f3v");
 		music.setTitle("3nd-untroubled terror");
 		music.setDescription("post rock");
 		music.setMusicUrl("http://sumtest.tunnel.mobi/WeixinDemo/music/3nd-untroubled terror.mp3");
@@ -204,19 +204,29 @@ public class MessageUtil {
 	 * 主菜单
 	 * @return
 	 */
-	public static String menuText(){
+	public static String mainMenu(){
 		StringBuffer sb=new StringBuffer();
 		sb.append("欢迎您的关注，请按照菜单提示进行操作：\n\n");
 		sb.append("1、文字消息\n");
 		sb.append("2、图文消息\n");
 		sb.append("3、图片消息\n");
-		sb.append("4、音乐消息\n\n");
+		sb.append("4、音乐消息\n");
+		sb.append("5、百度翻译\n\n");
 		sb.append("回复？调出此菜单");
 		return sb.toString();
 	}
-	public static String firstMenu(){
+	public static String textMenu(){
 		StringBuffer sb=new StringBuffer();
 		sb.append("这是一条文字消息。");
+		return sb.toString();
+	}
+	public static String transMenu(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("百度翻译使用指南\n\n");
+		sb.append("使用示例：\n");
+		sb.append("翻译中国国家防火墙\n");
+		sb.append("翻译Great Firewall of China\n\n");
+		sb.append("回复？显示主菜单。");
 		return sb.toString();
 	}
 }
