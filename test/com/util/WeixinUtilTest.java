@@ -32,11 +32,11 @@ public class WeixinUtilTest {
 	
 	@Test
 	public void testUpload(){	
-		String path="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/music/3nd-untroubled terror.jpg";
+		String path_temp="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/music/3nd-untroubled terror.jpg";
 		String path_perm="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/image/github.jpg";
 		try {
 			AccessToken token = WeixinUtil.getAccessToken();
-			String imageId=WeixinUtil.upload_temp(path, token.getToken(), "thumb");
+			String imageId=WeixinUtil.upload_temp(path_temp, token.getToken(), "thumb");
 			String URL=WeixinUtil.upload_perm(path_perm, token.getToken());
 			System.out.println("临时图片id "+imageId);
 			System.out.println("永久图片url "+URL);
@@ -68,6 +68,28 @@ public class WeixinUtilTest {
 			AccessToken token = WeixinUtil.getAccessToken();
 			JSONObject jsonObject = WeixinUtil.queryMenu(token.getToken());
 			System.out.println(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testTranslate(){
+		try {
+			String result1 = WeixinUtil.translate("中国国家防火墙");
+			String result2 = WeixinUtil.translate("Great Firewall of China");
+			System.out.println(result1);
+			System.out.println(result2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	@Test
+	public void testWeather(){
+		try {
+			String result = WeixinUtil.weather("上海");
+			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -19,7 +19,7 @@ import java.security.NoSuchProviderException;
  * @author Sumkor
  *
  */
-public class HttprequestUtil {
+public class HttpRequestUtil {
 	public static String httpRequest(File file,String url) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
 		
 		URL urlObj = new URL(url);
