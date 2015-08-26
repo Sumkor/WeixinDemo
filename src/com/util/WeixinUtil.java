@@ -31,10 +31,6 @@ import com.weather.Data;
 import com.weather.Forecast;
 import com.weather.WeatherResult;
 
-//import com.Data;
-//import com.Parts;
-//import com.trans.Symbols;
-//import com.trans.TransResult;
 
 /**
  * 获取微信及其他平台接口调用凭证
@@ -42,10 +38,10 @@ import com.weather.WeatherResult;
  *
  */
 public class WeixinUtil {
-	private static final String APPID="wx02611a7655e39458";
-	private static final String APPSECRET="6aa9fa520e5ad1414b4bacb63af95a2c";
+	private static final String APPID="wx###58";
+	private static final String APPSECRET="6a###2c";
 	
-	private static final String BAIDU_APIKEY="e5qeHZf77p4bGogKI6IZOdRl";
+	private static final String BAIDU_APIKEY="e5###Rl";
 	
 	//接口调用请求
 	private static final String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";	

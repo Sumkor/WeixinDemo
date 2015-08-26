@@ -2,7 +2,6 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -12,12 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.DocumentException;
 
-import com.po.TextMessage;
 import com.util.CheckUtil;
 import com.util.MessageUtil;
 import com.util.WeixinUtil;
 
+/**
+ * 微信后台交互
+ * @author Sumkor
+ * https://github.com/Sumkor
+ */
 public class WeixinServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 接入验证
 	 */
@@ -67,6 +71,8 @@ public class WeixinServlet extends HttpServlet {
 					message=MessageUtil.initMusicMessage(toUserName, fromUserName);
 				}else if("5".equals(content)){
 					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.transMenu());
+				}else if("6".equals(content)){
+					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.weatherMenu());
 				}else if("?".equals(content)||"？".equals(content)){
 					message=MessageUtil.initText(toUserName, fromUserName, MessageUtil.mainMenu());
 				}else if(content.startsWith("翻译")){
@@ -74,7 +80,14 @@ public class WeixinServlet extends HttpServlet {
 					if("".equals(word)){
 						message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.transMenu());
 					}else{
-						message = MessageUtil.initText(toUserName, fromUserName, WeixinUtil.translateFull(word));
+						message = MessageUtil.initText(toUserName, fromUserName, WeixinUtil.translate(word));
+					}
+				}else if(content.startsWith("天气")){
+					String word = content.replaceAll("^天气", "").trim();
+					if("".equals(word)){
+						message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.weatherMenu());
+					}else{
+						message = MessageUtil.initText(toUserName, fromUserName, WeixinUtil.weather(word));
 					}
 				}		
 			}else if(MessageUtil.MESSAGE_EVENT.equals(msgType)){

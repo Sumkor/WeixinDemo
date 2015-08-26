@@ -2,6 +2,7 @@ package com.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,10 @@ import com.po.News;
 import com.po.NewsMessage;
 import com.po.TextMessage;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.QuickWriter;  
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;  
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;  
+import com.thoughtworks.xstream.io.xml.XppDriver; 
 /**
  * 消息的格式转换
  * @author Sumkor
@@ -118,7 +123,7 @@ public class MessageUtil {
 		News news = new News();
 		news.setTitle("About GitHub");
 		news.setDescription("Build software better, together.");
-		news.setPicUrl("http://mmbiz.qpic.cn/mmbiz/6CMAND4ZqARicEWIRGBZHqCeicZwL6c7TtUJqaVv5DKn5icM8W5nAPNx7KbdgKLFrqYJohJlo322PHVVian8A9EyBw/0");
+		news.setPicUrl("http://mmbiz.qpic.cn/mmbiz/6CMAND4ZqAQkoHJG2cjb07jn2E1IoG0FOqica52Mia3kuYzPqAKFtGAakz6Olp2WHB3fRzYJUlnADcGevcIEOVww/0");
 		news.setUrl("https://github.com/");
 		
 		newsList.add(news);
@@ -200,6 +205,35 @@ public class MessageUtil {
 	}
 	
 	
+//	/**
+//	 * 扩展xstream，使其支持CDATA块(无用)
+//	 */
+//    private static XStream xstream = new XStream(new XppDriver() {  
+//        public HierarchicalStreamWriter createWriter(Writer out) {  
+//            return new PrettyPrintWriter(out) {  
+//                // 对所有xml节点的转换都增加CDATA标记  
+//                boolean cdata = true;  
+//  
+//                @SuppressWarnings("unchecked")  
+//                public void startNode(String name, Class clazz) {  
+//                    super.startNode(name, clazz);  
+//                }  
+//  
+//                protected void writeText(QuickWriter writer, String text) {  
+//                    if (cdata) {  
+//                        writer.write("<![CDATA[");  
+//                        writer.write(text);  
+//                        writer.write("]]>");  
+//                    } else {  
+//                        writer.write(text);  
+//                    }  
+//                }  
+//            };  
+//        }  
+//    }); 
+	
+	
+	
 	/**
 	 * 主菜单
 	 * @return
@@ -211,7 +245,8 @@ public class MessageUtil {
 		sb.append("2、图文消息\n");
 		sb.append("3、图片消息\n");
 		sb.append("4、音乐消息\n");
-		sb.append("5、百度翻译\n\n");
+		sb.append("5、百度翻译\n");
+		sb.append("6、天气预报\n\n");
 		sb.append("回复？调出此菜单");
 		return sb.toString();
 	}
@@ -224,8 +259,16 @@ public class MessageUtil {
 		StringBuffer sb = new StringBuffer();
 		sb.append("百度翻译使用指南\n\n");
 		sb.append("使用示例：\n");
-		sb.append("翻译中国国家防火墙\n");
-		sb.append("翻译Great Firewall of China\n\n");
+		sb.append("翻译早上好\n");
+		sb.append("翻译Good Morning\n\n");
+		sb.append("回复？显示主菜单。");
+		return sb.toString();
+	}
+	public static String weatherMenu(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("天气预报使用指南\n\n");
+		sb.append("使用示例：\n");
+		sb.append("天气广州\n");
 		sb.append("回复？显示主菜单。");
 		return sb.toString();
 	}

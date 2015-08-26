@@ -33,7 +33,7 @@ public class WeixinUtilTest {
 	@Test
 	public void testUpload(){	
 		String path_temp="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/music/3nd-untroubled terror.jpg";
-		String path_perm="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/image/github.jpg";
+		String path_perm="D:/TOOLS/MyEclipse/Workspaces/WeixinDemo/WebRoot/image/github.png";
 		try {
 			AccessToken token = WeixinUtil.getAccessToken();
 			String imageId=WeixinUtil.upload_temp(path_temp, token.getToken(), "thumb");
@@ -88,7 +88,7 @@ public class WeixinUtilTest {
 	@Test
 	public void testWeather(){
 		try {
-			String result = WeixinUtil.weather("上海");
+			String result = WeixinUtil.weather("广州");
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
